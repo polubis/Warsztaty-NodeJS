@@ -15,6 +15,7 @@ class App {
     this.createServer();
   }
 
+  /** Creates express app and adds middleware. */
   private configure = () => {
     this.app = express();
 
@@ -34,13 +35,15 @@ class App {
     this.app.use('/api', this.router);
   };
 
-  private logStart = () => {
+  /** Logs information after server start. */
+  private log = () => {
     console.log(`Service running at port ${this.app.get('port')} in ${this.app.get('env')} mode`);
     console.log('Date: ', new Date().toDateString());
   };
 
+  /** Creates server and adds logger. */
   private createServer = () => {
-    this.server = this.app.listen(this.app.get('port'), this.logStart);
+    this.server = this.app.listen(this.app.get('port'), this.log);
   };
 }
 
