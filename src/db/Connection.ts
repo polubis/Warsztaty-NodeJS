@@ -18,7 +18,6 @@ class Connection {
     return new Promise((resolve, reject) => {
       this.state.query(query, (err, result) => {
         if (err) {
-          console.log(err.message);
           reject(err.message);
         } else {
           resolve(JSON.parse(JSON.stringify(result))[0]);

@@ -1,10 +1,11 @@
-import bodyParser from 'body-parser';
+import BodyParser from 'body-parser';
 import cors from 'cors';
 import express, { Express } from 'express';
 import { Server } from 'http';
 
 import Controllers from './controllers';
 import { Initializer, Connection } from './db';
+import { ErrorHandler } from './middleware';
 
 class App {
   private app: Express;
@@ -14,6 +15,7 @@ class App {
   constructor() {
     this.configure();
     this.registerRoutes();
+    this.addRoutingMiddleware();
     this.createServer();
     this.initDb();
   }
@@ -24,8 +26,8 @@ class App {
 
     this.app.set('port', process.env.PORT || 8080);
 
-    this.app.use(bodyParser.json());
-    this.app.use(bodyParser.urlencoded({ extended: true }));
+    this.app.use(BodyParser.json());
+    this.app.use(BodyParser.urlencoded({ extended: true }));
     this.app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
   };
 
@@ -34,6 +36,11 @@ class App {
     Controllers.forEach(({ path, controller }) => {
       this.app.use(`/api/${path}`, controller);
     });
+  };
+
+  /** Adds routing middleware. */
+  private addRoutingMiddleware = () => {
+    this.app.use(ErrorHandler.parse());
   };
 
   /** Logs information after server start. */
